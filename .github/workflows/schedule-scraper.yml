@@ -26,6 +26,9 @@ jobs:
       
       - name: Install dependencies
         run: pnpm install
+        
+      - name: Install Chrome browser
+        run: pnpm dlx puppeteer browsers install chrome
       
       - name: Run get-pricing script
         run: node scripts/get-pricing.js
