@@ -1,0 +1,42 @@
+name: Daily Pricing Scraper
+
+on:
+  schedule:
+    # Run every day at 2 AM UTC (adjust time as needed)
+    - cron: '0 2 * * *'
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.32.1
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Run get-pricing script
+        run: node scripts/get-pricing.js
+      
+      - name: Run generate_usd_rates script
+        run: node scripts/generate_usd_rates.js
+      
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add public/*.csv public/*.json
+          git commit -m "chore: update pricing data $(date -u +'%Y-%m-%d')" || true
+          git push
