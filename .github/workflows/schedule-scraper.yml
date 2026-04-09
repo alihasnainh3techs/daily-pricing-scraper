@@ -35,11 +35,13 @@ jobs:
       
       - name: Run generate_usd_rates script
         run: node scripts/generate_usd_rates.js
-      
+
       - name: Commit and push changes
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add public/*.csv public/*.json
-          git commit -m "chore: update pricing data $(date -u +'%Y-%m-%d')" || true
-          git push
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add public/*.csv public/*.json
+            git commit -m "chore: update pricing data $(date -u +'%Y-%m-%d')" || true
+            git push
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
